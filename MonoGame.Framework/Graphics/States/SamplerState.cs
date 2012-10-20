@@ -288,6 +288,8 @@ namespace Microsoft.Xna.Framework.Graphics
 
             GL.TexParameter(target, TextureParameterName.TextureLodBias, MipMapLevelOfDetailBias);
             GraphicsExtensions.CheckGLError();
+            GL.TexParameter(target, TextureParameterName.TextureMinLod, MaxMipLevel);
+            GraphicsExtensions.CheckGLError();
         }
 
 		private int GetWrapMode(TextureAddressMode textureAddressMode)
