@@ -170,14 +170,23 @@ namespace Microsoft.Xna.Framework.Graphics
             GL.BlendEquation(blendMode);
             GraphicsExtensions.CheckGLError();
 
+            bool useBlendFactorSrc;
+            bool useBlendFactorDest;
+
             // Set blending function
-            var bfs = ColorSourceBlend.GetBlendFactorSrc();
-            var bfd = ColorDestinationBlend.GetBlendFactorDest(device);
+            var bfs = ColorSourceBlend.GetBlendFactorSrc(out useBlendFactorSrc);
+            var bfd = ColorDestinationBlend.GetBlendFactorDest(device, out useBlendFactorDest);
 #if IPHONE
 			GL.BlendFunc ((All)bfs, (All)bfd);
 #else
             GL.BlendFunc(bfs, bfd);
 #endif
+            if (useBlendFactorSrc || useBlendFactorDest)
+            {
+                Vector4 colorAsVec4 = BlendFactor.ToVector4();
+                GL.BlendColor(colorAsVec4.X, colorAsVec4.Y, colorAsVec4.Z, colorAsVec4.Z);
+            }
+
             GraphicsExtensions.CheckGLError();
         }
 

@@ -366,8 +366,10 @@ namespace Microsoft.Xna.Framework.Graphics
 			}
 		}
 
-		public static BlendingFactorSrc GetBlendFactorSrc (this Blend blend)
+		public static BlendingFactorSrc GetBlendFactorSrc (this Blend blend, out bool usesBlendFactor)
 		{
+            usesBlendFactor = false;
+
 			switch (blend) {
 			case Blend.DestinationAlpha:
 				return BlendingFactorSrc.DstAlpha;
@@ -398,15 +400,26 @@ namespace Microsoft.Xna.Framework.Graphics
 				return BlendingFactorSrc.SrcColor;
 #endif
 			case Blend.Zero:
-				return BlendingFactorSrc.Zero;
+                return BlendingFactorSrc.Zero;
+
+            // TODO: Need to use EXT (or not at all) on ES 1.x versions?
+            case Blend.BlendFactor:
+                usesBlendFactor = true;
+                return BlendingFactorSrc.ConstantColor;
+            case Blend.InverseBlendFactor:
+                usesBlendFactor = true;
+                return BlendingFactorSrc.OneMinusConstantColor;
+
 			default:
 				return BlendingFactorSrc.One;
 			}
 
 		}
 
-		public static BlendingFactorDest GetBlendFactorDest (this Blend blend, GraphicsDevice device)
+        public static BlendingFactorDest GetBlendFactorDest(this Blend blend, GraphicsDevice device, out bool usesBlendFactor)
 		{
+            usesBlendFactor = false;
+
 			switch (blend) {
 			case Blend.DestinationAlpha:
 				return BlendingFactorDest.DstAlpha;
@@ -455,7 +468,16 @@ namespace Microsoft.Xna.Framework.Graphics
 				return BlendingFactorDest.SrcColor;
 #endif
 			case Blend.Zero:
-				return BlendingFactorDest.Zero;
+                return BlendingFactorDest.Zero;
+
+            // TODO: Need to use EXT (or not at all) on ES 1.x versions?
+            case Blend.BlendFactor:
+                usesBlendFactor = true;
+                return BlendingFactorDest.ConstantColor;
+            case Blend.InverseBlendFactor:
+                usesBlendFactor = true;
+                return BlendingFactorDest.OneMinusConstantColor;
+
 			default:
 				return BlendingFactorDest.One;
 			}
