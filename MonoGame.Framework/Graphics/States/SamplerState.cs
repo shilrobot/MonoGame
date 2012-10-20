@@ -229,30 +229,56 @@ namespace Microsoft.Xna.Framework.Graphics
 
 		internal void Activate(TextureTarget target, bool useMipmaps = false)
 		{
+            TextureMinFilter minFilter;
+            TextureMagFilter magFilter;
+
 			switch(Filter)
 			{
 			case TextureFilter.Point:
-				GL.TexParameter(target, TextureParameterName.TextureMinFilter, (int)(useMipmaps ? TextureMinFilter.NearestMipmapNearest : TextureMinFilter.Nearest));
-                GraphicsExtensions.CheckGLError();
-				GL.TexParameter(target, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
-                GraphicsExtensions.CheckGLError();
+                minFilter = useMipmaps ? TextureMinFilter.NearestMipmapNearest : TextureMinFilter.Nearest;
+                magFilter = TextureMagFilter.Nearest;
 				break;
-			case TextureFilter.Linear:
-				GL.TexParameter(target, TextureParameterName.TextureMinFilter, (int)(useMipmaps ? TextureMinFilter.LinearMipmapLinear : TextureMinFilter.Linear));
-                GraphicsExtensions.CheckGLError();
-				GL.TexParameter(target, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-                GraphicsExtensions.CheckGLError();
+            case TextureFilter.Linear:
+                minFilter = useMipmaps ? TextureMinFilter.LinearMipmapLinear : TextureMinFilter.Linear;
+                magFilter = TextureMagFilter.Linear;
 				break;
-			case TextureFilter.Anisotropic:
-				// TODO: Requires EXT_texture_filter_anisotropic. Use linear filtering for now.
-				GL.TexParameter(target, TextureParameterName.TextureMinFilter, (int)(useMipmaps ? TextureMinFilter.LinearMipmapLinear : TextureMinFilter.Linear));
-                GraphicsExtensions.CheckGLError();
-				GL.TexParameter(target, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-                GraphicsExtensions.CheckGLError();
-				break;
+            case TextureFilter.Anisotropic:
+                // TODO: Requires EXT_texture_filter_anisotropic. Use linear filtering for now.
+                minFilter = useMipmaps ? TextureMinFilter.LinearMipmapLinear : TextureMinFilter.Linear;
+                magFilter = TextureMagFilter.Linear;
+                break;
+            case TextureFilter.LinearMipPoint:
+                minFilter = useMipmaps ? TextureMinFilter.LinearMipmapNearest : TextureMinFilter.Linear;
+                magFilter = TextureMagFilter.Linear;
+                break;
+            case TextureFilter.PointMipLinear:
+                minFilter = useMipmaps ? TextureMinFilter.NearestMipmapLinear : TextureMinFilter.Nearest;
+                magFilter = TextureMagFilter.Nearest;
+                break;
+            case TextureFilter.MinLinearMagPointMipLinear:
+                minFilter = useMipmaps ? TextureMinFilter.LinearMipmapLinear : TextureMinFilter.Linear;
+                magFilter = TextureMagFilter.Nearest;
+                break;
+            case TextureFilter.MinLinearMagPointMipPoint:
+                minFilter = useMipmaps ? TextureMinFilter.LinearMipmapNearest : TextureMinFilter.Linear;
+                magFilter = TextureMagFilter.Nearest;
+                break;
+            case TextureFilter.MinPointMagLinearMipLinear:
+                minFilter = useMipmaps ? TextureMinFilter.NearestMipmapLinear : TextureMinFilter.Nearest;
+                magFilter = TextureMagFilter.Linear;
+                break;
+            case TextureFilter.MinPointMagLinearMipPoint:
+                minFilter = useMipmaps ? TextureMinFilter.NearestMipmapNearest : TextureMinFilter.Nearest;
+                magFilter = TextureMagFilter.Linear;
+                break;
 			default:
-				throw new NotImplementedException();
+				throw new NotImplementedException(Filter + " is not supported");
 			}
+
+            GL.TexParameter(target, TextureParameterName.TextureMinFilter, (int)minFilter);
+            GraphicsExtensions.CheckGLError();
+            GL.TexParameter(target, TextureParameterName.TextureMagFilter, (int)magFilter);
+            GraphicsExtensions.CheckGLError();
 
 			// Set up texture addressing.
 			GL.TexParameter(target, TextureParameterName.TextureWrapS, (int)GetWrapMode(AddressU));
