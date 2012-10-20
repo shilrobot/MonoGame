@@ -411,17 +411,23 @@ namespace Microsoft.Xna.Framework.Graphics
 			case Blend.DestinationAlpha:
 				return BlendingFactorDest.DstAlpha;
 			case Blend.DestinationColor:
-				// Temporary workaround for missing enumeration value in OpenTK
-                return (BlendingFactorDest)All.DstColor;
+#if MONOMAC || WINDOWS || LINUX
+				return (BlendingFactorDest)All.DstColor;
+#else
+				return BlendingFactorDest.DstColor;
+#endif
 			case Blend.InverseDestinationAlpha:
 				return BlendingFactorDest.OneMinusDstAlpha;
 			case Blend.InverseDestinationColor:
-				// Temporary workaround for missing enumeration value in OpenTK
-                return (BlendingFactorDest)All.OneMinusDstColor;
+#if MONOMAC || WINDOWS || LINUX
+				return (BlendingFactorDest)All.OneMinusDstColor;
+#else
+				return BlendingFactorDest.OneMinusDstColor;
+#endif
 			case Blend.InverseSourceAlpha:
 				return BlendingFactorDest.OneMinusSrcAlpha;
 			case Blend.InverseSourceColor:
-#if MONOMAC || WINDOWS
+#if MONOMAC || WINDOWS || LINUX
 				return (BlendingFactorDest)All.OneMinusSrcColor;
 #else
 				return BlendingFactorDest.OneMinusSrcColor;
@@ -433,11 +439,17 @@ namespace Microsoft.Xna.Framework.Graphics
 			case Blend.SourceAlphaSaturation:
 				// This is only valid as a destination blend function if you have got the extension
 				if (device.glBlendFuncExtendedExtension)
-                    return (BlendingFactorDest)All.SrcAlphaSaturate;
+				{
+#if MONOMAC || WINDOWS || LINUX
+					return (BlendingFactorDest)All.SrcAlphaSaturate;
+#else
+					return BlendingFactorDest.SrcAlphaSaturate;
+#endif
+				}
 				else
 					return BlendingFactorDest.One;
 			case Blend.SourceColor:
-#if MONOMAC || WINDOWS
+#if MONOMAC || WINDOWS || LINUX
 				return (BlendingFactorDest)All.SrcColor;
 #else
 				return BlendingFactorDest.SrcColor;
