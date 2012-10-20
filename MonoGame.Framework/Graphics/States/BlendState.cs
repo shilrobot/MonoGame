@@ -137,7 +137,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
         public override string ToString ()
         {
-            string blendStateName;
+            string blendStateName = null;
 
             if(this == BlendState.Additive)
                 blendStateName = "Additive";
@@ -145,11 +145,17 @@ namespace Microsoft.Xna.Framework.Graphics
                 blendStateName = "AlphaBlend";
             else if (this == BlendState.NonPremultiplied)
                 blendStateName = "NonPremultiplied";
-            else
+            else if (this == BlendState.Opaque)
                 blendStateName = "Opaque";
 
-
-            return string.Format("{0}.{1}", base.ToString(), blendStateName);
+            if (blendStateName != null)
+            {
+                return string.Format("{0}.{1}", base.ToString(), blendStateName);
+            }
+            else
+            {
+                return string.Format("{0}(custom)", base.ToString());
+            }
         }
 
 
