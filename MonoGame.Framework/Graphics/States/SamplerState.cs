@@ -286,10 +286,12 @@ namespace Microsoft.Xna.Framework.Graphics
             GL.TexParameter(target, TextureParameterName.TextureWrapT, (int)GetWrapMode(AddressV));
             GraphicsExtensions.CheckGLError();
 
+#if !GLES
             GL.TexParameter(target, TextureParameterName.TextureLodBias, MipMapLevelOfDetailBias);
             GraphicsExtensions.CheckGLError();
             GL.TexParameter(target, TextureParameterName.TextureMinLod, MaxMipLevel);
             GraphicsExtensions.CheckGLError();
+#endif
         }
 
 		private int GetWrapMode(TextureAddressMode textureAddressMode)
