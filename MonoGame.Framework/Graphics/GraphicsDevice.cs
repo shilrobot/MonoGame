@@ -222,7 +222,14 @@ namespace Microsoft.Xna.Framework.Graphics
         internal int glFramebuffer;
         internal int MaxVertexAttributes;
 
+        // Whether or not we have GL_SGIS_texture_lod
+        internal bool glTextureLodExtension;
+
+        // Whether or not we have GL_EXT_texture_lod_bias
         internal bool glTextureLodBiasExtension;
+        
+        // Whether or not we have GL_EXT_texture_filter_anisotropic
+        internal bool glTextureFilterAnisotropicExtension;
 #endif
         
         internal int MaxTextureSlots;
@@ -350,12 +357,16 @@ namespace Microsoft.Xna.Framework.Graphics
             }
 
 #if GLES
+            // Maybe some GLES drivers have these, but they aren't guaranteed
+            glTextureLodExtension = _extensions.Contains("GL_SGIS_texture_lod");
             glTextureLodBiasExtension = _extensions.Contains("GL_EXT_texture_lod_bias");
 #else
-            // Just assume we have this if we're not using GL ES,
-            // since it's in OpenGL 2.0
+            // Just assume we have these since they are in GL 1.4
+            glTextureLodExtension = true;
             glTextureLodBiasExtension = true;
 #endif
+
+            glTextureFilterAnisotropicExtension = _extensions.Contains("GL_EXT_texture_filter_anisotropic");
 
 #endif // OPENGL
 

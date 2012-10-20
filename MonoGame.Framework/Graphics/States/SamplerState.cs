@@ -128,7 +128,12 @@ namespace Microsoft.Xna.Framework.Graphics
 		public int MaxAnisotropy { get; set; }
 		public int MaxMipLevel { get; set; }
 		public float MipMapLevelOfDetailBias { get; set; }
-		
+
+        public SamplerState()
+        {
+            MaxAnisotropy = 4;
+        }
+
 #if DIRECTX
 
         internal SharpDX.Direct3D11.SamplerState GetState(GraphicsDevice device)
@@ -231,6 +236,7 @@ namespace Microsoft.Xna.Framework.Graphics
 		{
             TextureMinFilter minFilter;
             TextureMagFilter magFilter;
+            bool anisotropic = false;
 
 			switch(Filter)
 			{
@@ -243,9 +249,9 @@ namespace Microsoft.Xna.Framework.Graphics
                 magFilter = TextureMagFilter.Linear;
 				break;
             case TextureFilter.Anisotropic:
-                // TODO: Requires EXT_texture_filter_anisotropic. Use linear filtering for now.
                 minFilter = useMipmaps ? TextureMinFilter.LinearMipmapLinear : TextureMinFilter.Linear;
                 magFilter = TextureMagFilter.Linear;
+                anisotropic = true;
                 break;
             case TextureFilter.LinearMipPoint:
                 minFilter = useMipmaps ? TextureMinFilter.LinearMipmapNearest : TextureMinFilter.Linear;
@@ -286,16 +292,27 @@ namespace Microsoft.Xna.Framework.Graphics
             GL.TexParameter(target, TextureParameterName.TextureWrapT, (int)GetWrapMode(AddressV));
             GraphicsExtensions.CheckGLError();
 
+            if (device.glTextureFilterAnisotropicExtension)
+            {
+                // TODO: Make this work for GL ES
+                GL.TexParameter(TextureTarget.Texture2D,
+                                (TextureParameterName)ExtTextureFilterAnisotropic.TextureMaxAnisotropyExt,
+                                anisotropic ? MaxAnisotropy : 1);
+                GraphicsExtensions.CheckGLError();
+            }
+
             if (device.glTextureLodBiasExtension)
             {
                 GL.TexParameter(target, TextureParameterName.TextureLodBias, MipMapLevelOfDetailBias);
                 GraphicsExtensions.CheckGLError();
             }
 
-#if !GLES
-            GL.TexParameter(target, TextureParameterName.TextureMinLod, MaxMipLevel);
-            GraphicsExtensions.CheckGLError();
-#endif
+            if (device.glTextureLodExtension)
+            {
+                // Terminological difference between D3D and GL -- D3D's "max mip level" is GL's "min lod".
+                GL.TexParameter(target, TextureParameterName.TextureMinLod, MaxMipLevel);
+                GraphicsExtensions.CheckGLError();
+            }
         }
 
 		private int GetWrapMode(TextureAddressMode textureAddressMode)
