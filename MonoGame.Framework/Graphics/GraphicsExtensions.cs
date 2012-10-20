@@ -412,12 +412,12 @@ namespace Microsoft.Xna.Framework.Graphics
 				return BlendingFactorDest.DstAlpha;
 			case Blend.DestinationColor:
 				// Temporary workaround for missing enumeration value in OpenTK
-				return (BlendingFactorDest)BlendingFactorSrc.DstColor;
+                return (BlendingFactorDest)All.DstColor;
 			case Blend.InverseDestinationAlpha:
 				return BlendingFactorDest.OneMinusDstAlpha;
 			case Blend.InverseDestinationColor:
 				// Temporary workaround for missing enumeration value in OpenTK
-				return (BlendingFactorDest)BlendingFactorSrc.OneMinusDstColor;
+                return (BlendingFactorDest)All.OneMinusDstColor;
 			case Blend.InverseSourceAlpha:
 				return BlendingFactorDest.OneMinusSrcAlpha;
 			case Blend.InverseSourceColor:
@@ -433,7 +433,7 @@ namespace Microsoft.Xna.Framework.Graphics
 			case Blend.SourceAlphaSaturation:
 				// This is only valid as a destination blend function if you have got the extension
 				if (device.glBlendFuncExtendedExtension)
-					return (BlendingFactorDest)BlendingFactorSrc.SrcAlphaSaturate;
+                    return (BlendingFactorDest)All.SrcAlphaSaturate;
 				else
 					return BlendingFactorDest.One;
 			case Blend.SourceColor:
