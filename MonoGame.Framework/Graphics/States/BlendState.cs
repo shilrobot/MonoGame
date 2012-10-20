@@ -181,6 +181,7 @@ namespace Microsoft.Xna.Framework.Graphics
 #else
             GL.BlendFunc(bfs, bfd);
 #endif
+            // TODO: Can't do this on ES 1.1, must fix
             if (useBlendFactorSrc || useBlendFactorDest)
             {
                 Vector4 colorAsVec4 = BlendFactor.ToVector4();
