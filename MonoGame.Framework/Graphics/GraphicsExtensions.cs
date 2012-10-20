@@ -401,15 +401,12 @@ namespace Microsoft.Xna.Framework.Graphics
 #endif
 			case Blend.Zero:
                 return BlendingFactorSrc.Zero;
-
-            // TODO: Need to use EXT (or not at all) on ES 1.x versions?
             case Blend.BlendFactor:
                 usesBlendFactor = true;
                 return BlendingFactorSrc.ConstantColor;
             case Blend.InverseBlendFactor:
                 usesBlendFactor = true;
                 return BlendingFactorSrc.OneMinusConstantColor;
-
 			default:
 				return BlendingFactorSrc.One;
 			}
@@ -469,15 +466,12 @@ namespace Microsoft.Xna.Framework.Graphics
 #endif
 			case Blend.Zero:
                 return BlendingFactorDest.Zero;
-
-            // TODO: Need to use EXT (or not at all) on ES 1.x versions?
             case Blend.BlendFactor:
                 usesBlendFactor = true;
                 return BlendingFactorDest.ConstantColor;
             case Blend.InverseBlendFactor:
                 usesBlendFactor = true;
                 return BlendingFactorDest.OneMinusConstantColor;
-
 			default:
 				return BlendingFactorDest.One;
 			}
