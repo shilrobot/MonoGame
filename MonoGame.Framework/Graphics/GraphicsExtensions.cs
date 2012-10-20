@@ -405,17 +405,19 @@ namespace Microsoft.Xna.Framework.Graphics
 
 		}
 
-		public static BlendingFactorDest GetBlendFactorDest (this Blend blend)
+		public static BlendingFactorDest GetBlendFactorDest (this Blend blend, GraphicsDevice device)
 		{
 			switch (blend) {
 			case Blend.DestinationAlpha:
 				return BlendingFactorDest.DstAlpha;
-//			case Blend.DestinationColor:
-//				return BlendingFactorDest.DstColor;
+			case Blend.DestinationColor:
+                // Temporary workaround for missing enumeration value in OpenTK
+                return (BlendingFactorDest)BlendingFactorSrc.DstColor;
 			case Blend.InverseDestinationAlpha:
 				return BlendingFactorDest.OneMinusDstAlpha;
-//			case Blend.InverseDestinationColor:
-//				return BlendingFactorDest.OneMinusDstColor;
+            case Blend.InverseDestinationColor:
+                // Temporary workaround for missing enumeration value in OpenTK
+				return (BlendingFactorDest)BlendingFactorSrc.OneMinusDstColor;
 			case Blend.InverseSourceAlpha:
 				return BlendingFactorDest.OneMinusSrcAlpha;
 			case Blend.InverseSourceColor:
@@ -428,8 +430,12 @@ namespace Microsoft.Xna.Framework.Graphics
 				return BlendingFactorDest.One;
 			case Blend.SourceAlpha:
 				return BlendingFactorDest.SrcAlpha;
-//			case Blend.SourceAlphaSaturation:
-//				return BlendingFactorDest.SrcAlphaSaturate;
+            case Blend.SourceAlphaSaturation:
+                // This is only valid as a destination blend function if you have got the extension
+                if (device.glBlendFuncExtendedExtension)
+                    return (BlendingFactorDest)BlendingFactorSrc.SrcAlphaSaturate;
+                else
+                    return BlendingFactorDest.One;
 			case Blend.SourceColor:
 #if MONOMAC || WINDOWS
 				return (BlendingFactorDest)All.SrcColor;

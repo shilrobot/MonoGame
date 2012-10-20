@@ -223,13 +223,21 @@ namespace Microsoft.Xna.Framework.Graphics
         internal int MaxVertexAttributes;
 
         // Whether or not we have GL_SGIS_texture_lod
+        // Provides support for SamplerState.MaxMipLevel
         internal bool glTextureLodExtension;
 
         // Whether or not we have GL_EXT_texture_lod_bias
+        // Provides support for SamplerState.MaxAnisotropy
         internal bool glTextureLodBiasExtension;
-        
+
         // Whether or not we have GL_EXT_texture_filter_anisotropic
+        // Provides support for TextureFilter.Anisotropic and SamplerState.MaxAnisotropy
         internal bool glTextureFilterAnisotropicExtension;
+
+        // Whether or not we have GL_ARB_blend_func_extended.
+        // This provides the ability to use GL_SRC_ALPHA_SATURATE as a destination blending function,
+        // so we can use Blend.SourceAlphaSaturation for BlendState.ColorDestinationBlend
+        internal bool glBlendFuncExtendedExtension;
 #endif
         
         internal int MaxTextureSlots;
@@ -367,6 +375,7 @@ namespace Microsoft.Xna.Framework.Graphics
 #endif
 
             glTextureFilterAnisotropicExtension = _extensions.Contains("GL_EXT_texture_filter_anisotropic");
+            glBlendFuncExtendedExtension = _extensions.Contains("GL_ARB_blend_func_extended");
 
 #endif // OPENGL
 

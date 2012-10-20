@@ -172,7 +172,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
             // Set blending function
             var bfs = ColorSourceBlend.GetBlendFactorSrc();
-            var bfd = ColorDestinationBlend.GetBlendFactorDest();
+            var bfd = ColorDestinationBlend.GetBlendFactorDest(device);
 #if IPHONE
 			GL.BlendFunc ((All)bfs, (All)bfd);
 #else
