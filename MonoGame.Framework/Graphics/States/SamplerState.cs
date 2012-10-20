@@ -227,7 +227,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
 #if OPENGL
 
-		internal void Activate(TextureTarget target, bool useMipmaps = false)
+		internal void Activate(GraphicsDevice device, TextureTarget target, bool useMipmaps = false)
 		{
             TextureMinFilter minFilter;
             TextureMagFilter magFilter;
@@ -286,9 +286,13 @@ namespace Microsoft.Xna.Framework.Graphics
             GL.TexParameter(target, TextureParameterName.TextureWrapT, (int)GetWrapMode(AddressV));
             GraphicsExtensions.CheckGLError();
 
+            if (device.glTextureLodBiasExtension)
+            {
+                GL.TexParameter(target, TextureParameterName.TextureLodBias, MipMapLevelOfDetailBias);
+                GraphicsExtensions.CheckGLError();
+            }
+
 #if !GLES
-            GL.TexParameter(target, TextureParameterName.TextureLodBias, MipMapLevelOfDetailBias);
-            GraphicsExtensions.CheckGLError();
             GL.TexParameter(target, TextureParameterName.TextureMinLod, MaxMipLevel);
             GraphicsExtensions.CheckGLError();
 #endif

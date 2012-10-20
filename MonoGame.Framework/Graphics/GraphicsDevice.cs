@@ -220,7 +220,9 @@ namespace Microsoft.Xna.Framework.Graphics
 
 #if OPENGL
         internal int glFramebuffer;
-        internal int MaxVertexAttributes;        
+        internal int MaxVertexAttributes;
+
+        internal bool glTextureLodBiasExtension;
 #endif
         
         internal int MaxTextureSlots;
@@ -346,6 +348,14 @@ namespace Microsoft.Xna.Framework.Graphics
                     System.Diagnostics.Debug.WriteLine(extension);
 #endif
             }
+
+#if GLES
+            glTextureLodBiasExtension = _extensions.Contains("GL_EXT_texture_lod_bias");
+#else
+            // Just assume we have this if we're not using GL ES,
+            // since it's in OpenGL 2.0
+            glTextureLodBiasExtension = true;
+#endif
 
 #endif // OPENGL
 
