@@ -366,10 +366,8 @@ namespace Microsoft.Xna.Framework.Graphics
 			}
 		}
 
-		public static BlendingFactorSrc GetBlendFactorSrc (this Blend blend, out bool usesBlendFactor)
+		public static BlendingFactorSrc GetBlendFactorSrc (this Blend blend, ref bool usesBlendFactor)
 		{
-            usesBlendFactor = false;
-
 			switch (blend) {
 			case Blend.DestinationAlpha:
 				return BlendingFactorSrc.DstAlpha;
@@ -413,10 +411,8 @@ namespace Microsoft.Xna.Framework.Graphics
 
 		}
 
-        public static BlendingFactorDest GetBlendFactorDest(this Blend blend, GraphicsDevice device, out bool usesBlendFactor)
+        public static BlendingFactorDest GetBlendFactorDest(this Blend blend, GraphicsDevice device, ref bool usesBlendFactor)
 		{
-            usesBlendFactor = false;
-
 			switch (blend) {
 			case Blend.DestinationAlpha:
 				return BlendingFactorDest.DstAlpha;

@@ -165,25 +165,49 @@ namespace Microsoft.Xna.Framework.Graphics
             GL.Enable(EnableCap.Blend);
             GraphicsExtensions.CheckGLError();
 
-            // Set blending mode
-            var blendMode = ColorBlendFunction.GetBlendEquationMode();
-            GL.BlendEquation(blendMode);
-            GraphicsExtensions.CheckGLError();
+            if (ColorBlendFunction == AlphaBlendFunction)
+            {
+                // Set blending mode
+                var blendMode = ColorBlendFunction.GetBlendEquationMode();
+                GL.BlendEquation(blendMode);
+                GraphicsExtensions.CheckGLError();
+            }
+            else
+            {
+                // Separate blending equations for color & alpha
+                var colorBlendMode = ColorBlendFunction.GetBlendEquationMode();
+                var alphaBlendMode = AlphaBlendFunction.GetBlendEquationMode();
+                GL.BlendEquationSeparate(colorBlendMode, alphaBlendMode);
+                GraphicsExtensions.CheckGLError();
+            }
 
-            bool useBlendFactorSrc;
-            bool useBlendFactorDest;
+            bool usesBlendFactor = false;
 
-            // Set blending function
-            var bfs = ColorSourceBlend.GetBlendFactorSrc(out useBlendFactorSrc);
-            var bfd = ColorDestinationBlend.GetBlendFactorDest(device, out useBlendFactorDest);
+            if (ColorSourceBlend == AlphaSourceBlend &&
+                ColorDestinationBlend == AlphaDestinationBlend)
+            {
+                // Set blending function
+                var bfs = ColorSourceBlend.GetBlendFactorSrc(ref usesBlendFactor);
+                var bfd = ColorDestinationBlend.GetBlendFactorDest(device, ref usesBlendFactor);
 #if IPHONE
 			GL.BlendFunc ((All)bfs, (All)bfd);
 #else
-            GL.BlendFunc(bfs, bfd);
+                GL.BlendFunc(bfs, bfd);
 #endif
-            GraphicsExtensions.CheckGLError();
+                GraphicsExtensions.CheckGLError();
+            }
+            else
+            {
+                // Separate blending functions for color & alpha
+                var cbfs = ColorSourceBlend.GetBlendFactorSrc(ref usesBlendFactor);
+                var cbfd = ColorDestinationBlend.GetBlendFactorDest(device, ref usesBlendFactor);
+                var abfs = AlphaSourceBlend.GetBlendFactorSrc(ref usesBlendFactor);
+                var abfd = AlphaDestinationBlend.GetBlendFactorDest(device, ref usesBlendFactor);
+                GL.BlendFuncSeparate(cbfs, cbfd, abfs, abfd);
+                GraphicsExtensions.CheckGLError();
+            }
 
-            if (useBlendFactorSrc || useBlendFactorDest)
+            if (usesBlendFactor)
             {
                 Vector4 colorAsVec4 = BlendFactor.ToVector4();
                 GL.BlendColor(colorAsVec4.X, colorAsVec4.Y, colorAsVec4.Z, colorAsVec4.Z);
