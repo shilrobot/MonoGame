@@ -70,7 +70,7 @@ namespace Microsoft.Xna.Framework.Input
         {
 		        Init();
 				if (!sdl) return;
-				Console.WriteLine("Number of joysticks: " + Sdl.SDL_NumJoysticks());
+				// Console.WriteLine("Number of joysticks: " + Sdl.SDL_NumJoysticks());
 					int numSticks = Sdl.SDL_NumJoysticks();
 					for (int x = 0; x < numSticks; x++) {
 
